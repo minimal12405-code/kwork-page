@@ -1,338 +1,524 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Марат | Telegram-боты, сайты и mini-apps</title>
-  <meta name="description" content="Fullstack-разработчик. Telegram-боты, сайты под ключ и mini-apps для автоматизации продаж и общения с клиентами.">
-  <style>
-    :root {
-      --bg: #0f1419;
-      --card: rgba(24, 32, 42, 0.85);
-      --text: #e8eef4;
-      --muted: #8b9bab;
-      --accent: #2aabee;
-      --accent-dark: #1d8fd0;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      overflow-x: hidden;
-      position: relative;
-    }
-    
-    /* Контейнер для анимированного фона */
-    #particles-js {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: 1;
-      pointer-events: none;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Марат | Telegram-боты, сайты и mini-apps</title>
+<meta name="description" content="Fullstack-разработчик. Telegram-боты, сайты под ключ и mini-apps для автоматизации продаж и общения с клиентами.">
+<style>
+  :root {
+    --bg: #0f1419;
+    --card: rgba(24, 32, 42, 0.85);
+    --text: #e8eef4;
+    --muted: #8b9bab;
+    --accent: #2aabee;
+    --accent-dark: #1d8fd0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+  }
 
-    /* Оболочка контента */
-    .content-wrapper {
-      position: relative;
-      z-index: 2;
-    }
-    
-    /* Анимация плавного появления */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+  /* Анимированный фон: холст с частицами */
+  #bg-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .content-wrapper { position: relative; z-index: 2; }
 
-    .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
-    
-    header { 
-      padding: 100px 0 60px; 
-      text-align: center;
-      animation: fadeInUp 0.8s ease-out forwards;
-    }
-    
-    .badge {
-      display: inline-block;
-      padding: 6px 14px;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      border-radius: 999px;
-      font-size: 14px;
-      margin-bottom: 20px;
-      background: rgba(42, 171, 238, 0.05);
-      backdrop-filter: blur(4px);
-      transition: all 0.3s ease;
-    }
-    .badge:hover {
-      box-shadow: 0 0 15px rgba(42, 171, 238, 0.4);
-      transform: scale(1.05);
-    }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-    h1 { font-size: clamp(32px, 6vw, 56px); line-height: 1.15; margin-bottom: 16px; }
-    h1 span { color: var(--accent); text-shadow: 0 0 20px rgba(42, 171, 238, 0.2); }
-    .lead { color: var(--muted); font-size: 18px; max-width: 620px; margin: 0 auto 32px; }
-    
-    .btn {
-      display: inline-block;
-      background: var(--accent);
-      color: #fff;
-      text-decoration: none;
-      padding: 16px 32px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 17px;
-      transition: background .2s, transform .2s, box-shadow .2s;
-    }
-    .btn:hover { 
-      background: var(--accent-dark); 
-      transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(42, 171, 238, 0.4);
-    }
-    
-    /* Убрали старую раздельную анимацию секций, теперь всё показывается сразу без багов */
-    section { 
-      padding: 60px 0;
-      animation: fadeInUp 0.8s ease-out forwards;
-    }
-    
-    h2 { font-size: 30px; margin-bottom: 35px; text-align: center; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-    
-    .card {
-      background: var(--card);
-      backdrop-filter: blur(8px);
-      padding: 28px;
-      border-radius: 16px;
-      border: 1px solid rgba(36, 48, 64, 0.7);
-      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      border-color: var(--accent);
-      box-shadow: 0 10px 30px rgba(42, 171, 238, 0.15);
-    }
-    .card .icon { 
-      font-size: 34px; 
-      margin-bottom: 12px;
-      display: inline-block;
-      transition: transform 0.3s ease;
-    }
-    .card:hover .icon {
-      transform: scale(1.2) rotate(5deg);
-    }
-    .card h3 { margin-bottom: 8px; font-size: 20px; }
-    .card p { color: var(--muted); }
-    
-    .portfolio-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 25px;
-    }
-    .portfolio-card {
-      background: var(--card);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(36, 48, 64, 0.7);
-      border-radius: 16px;
-      padding: 30px;
-      transition: all 0.3s ease;
-    }
-    .portfolio-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 10px 30px rgba(42, 171, 238, 0.15);
-      transform: scale(1.02);
-    }
-    .portfolio-tag {
-      font-size: 12px;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-      display: block;
-    }
-    .portfolio-card h3 { margin-bottom: 12px; font-size: 22px; }
-    .portfolio-card p { color: var(--muted); font-size: 15px; }
+  .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
 
-    .steps { counter-reset: step; display: grid; gap: 16px; }
-    .step {
-      background: var(--card);
-      backdrop-filter: blur(8px);
-      padding: 20px 24px 20px 70px;
-      border-radius: 14px;
-      position: relative;
-      border: 1px solid rgba(36, 48, 64, 0.7);
-      transition: transform 0.2s ease;
-    }
-    .step:hover {
-      transform: translateX(5px);
-    }
-    .step::before {
-      counter-increment: step;
-      content: counter(step);
-      position: absolute;
-      left: 20px; top: 50%;
-      transform: translateY(-50%);
-      width: 36px; height: 36px;
-      background: var(--accent);
-      color: #fff;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700;
-      transition: transform 0.3s ease;
-    }
-    .step:hover::before {
-      transform: translateY(-50%) scale(1.1);
-      background: var(--accent-dark);
-    }
-    
-    .skills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-    .skills span {
-      background: var(--card);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(36, 48, 64, 0.7);
-      padding: 8px 16px;
-      border-radius: 999px;
-      color: var(--muted);
-      font-size: 15px;
-      transition: all 0.2s ease;
-    }
-    .skills span:hover {
-      color: #fff;
-      border-color: var(--accent);
-      background: rgba(42, 171, 238, 0.05);
-    }
+  header { padding: 100px 0 60px; text-align: center; animation: fadeInUp 0.8s ease-out forwards; }
+  .badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    background: rgba(42, 171, 238, 0.05);
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+  }
+  .badge:hover { box-shadow: 0 0 15px rgba(42, 171, 238, 0.4); transform: scale(1.05); }
+  h1 { font-size: clamp(32px, 6vw, 56px); line-height: 1.15; margin-bottom: 16px; }
+  h1 span { color: var(--accent); text-shadow: 0 0 20px rgba(42, 171, 238, 0.2); }
+  .lead { color: var(--muted); font-size: 18px; max-width: 620px; margin: 0 auto 32px; }
 
-    .faq-container { display: grid; gap: 12px; max-width: 750px; margin: 0 auto; }
-    .faq-item {
-      background: var(--card);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(36, 48, 64, 0.7);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .faq-input { display: none; }
-    .faq-label {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 24px;
-      font-weight: 600;
-      cursor: pointer;
-      user-select: none;
-      transition: color 0.2s;
-    }
-    .faq-label:hover { color: var(--accent); }
-    .faq-label::after {
-      content: '+';
-      font-size: 22px;
-      color: var(--accent);
-      transition: transform 0.3s ease;
-    }
-    .faq-text {
-      max-height: 0;
-      padding: 0 24px;
-      color: var(--muted);
-      overflow: hidden;
-      transition: max-height 0.3s ease, padding 0.3s ease;
-      font-size: 15px;
-    }
-    .faq-input:checked ~ .faq-text {
-      max-height: 200px;
-      padding: 0 24px 20px;
-    }
-    .faq-input:checked ~ .faq-label::after {
-      transform: rotate(45deg);
-    }
+  .btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 17px;
+    border: 2px solid var(--accent);
+    transition: background .2s, transform .2s, box-shadow .2s;
+  }
+  .btn:hover { background: var(--accent-dark); border-color: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 5px 20px rgba(42, 171, 238, 0.4); }
+  .btn.ghost { background: transparent; color: var(--accent); }
+  .btn.ghost:hover { background: var(--accent); color: #fff; }
 
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 25px;
-    }
-    .social-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      color: #fff;
-      text-decoration: none;
-      padding: 16px 36px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 17px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-    }
-    .social-btn.tg { background: #24A1DE; }
-    .social-btn.tg:hover {
-      background: #1d82b3;
-      transform: translateY(-2px);
-      box-shadow: 0 7px 20px rgba(36, 161, 222, 0.4);
-    }
-    
-    .cta { text-align: center; padding: 80px 0; }
-    .cta p { color: var(--muted); margin-bottom: 10px; }
-    footer { text-align: center; color: var(--muted); padding: 40px 0; font-size: 14px; border-top: 1px solid rgba(36, 48, 64, 0.7); }
-  </style>
+  section { padding: 60px 0; animation: fadeInUp 0.8s ease-out forwards; }
+  h2 { font-size: 30px; margin-bottom: 35px; text-align: center; }
+  .sub { text-align: center; color: var(--muted); margin: -20px 0 35px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .card {
+    background: var(--card);
+    backdrop-filter: blur(8px);
+    padding: 28px;
+    border-radius: 16px;
+    border: 1px solid rgba(36, 48, 64, 0.7);
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(42, 171, 238, 0.15); }
+  .card .icon { font-size: 34px; margin-bottom: 12px; display: inline-block; transition: transform 0.3s ease; }
+  .card:hover .icon { transform: scale(1.2) rotate(5deg); }
+  .card h3 { margin-bottom: 8px; font-size: 20px; }
+  .card p { color: var(--muted); }
+
+  /* Цены */
+  .price-card { display: flex; flex-direction: column; position: relative; }
+  .price-card.popular { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 10px 30px rgba(42, 171, 238, 0.15); }
+  .tag {
+    position: absolute; top: -12px; right: 20px;
+    background: var(--accent); color: #fff;
+    font-size: 12px; font-weight: 700;
+    padding: 4px 12px; border-radius: 999px;
+  }
+  .price { font-size: 34px; font-weight: 800; margin: 6px 0 2px; }
+  .term { color: var(--muted); font-size: 14px; }
+  .price-card ul { list-style: none; margin: 16px 0 24px; flex: 1; }
+  .price-card li { color: var(--muted); padding: 5px 0 5px 26px; position: relative; }
+  .price-card li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .price-card .btn { text-align: center; padding: 12px 20px; font-size: 16px; }
+  .note { text-align: center; color: var(--muted); font-size: 14px; margin-top: 22px; }
+
+  /* Портфолио */
+  .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+  .portfolio-card {
+    background: var(--card);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(36, 48, 64, 0.7);
+    border-radius: 16px;
+    padding: 30px;
+    transition: all 0.3s ease;
+  }
+  .portfolio-card:hover { border-color: var(--accent); box-shadow: 0 10px 30px rgba(42, 171, 238, 0.15); transform: scale(1.02); }
+  .portfolio-tag { font-size: 12px; text-transform: uppercase; color: var(--accent); font-weight: 700; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+  .portfolio-card h3 { margin-bottom: 12px; font-size: 22px; }
+  .portfolio-card p { color: var(--muted); font-size: 15px; }
+
+  /* Этапы */
+  .steps { counter-reset: step; display: grid; gap: 16px; }
+  .step {
+    background: var(--card);
+    backdrop-filter: blur(8px);
+    padding: 20px 24px 20px 70px;
+    border-radius: 14px;
+    position: relative;
+    border: 1px solid rgba(36, 48, 64, 0.7);
+    transition: transform 0.2s ease;
+  }
+  .step:hover { transform: translateX(5px); }
+  .step::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: 20px; top: 50%;
+    transform: translateY(-50%);
+    width: 36px; height: 36px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    transition: transform 0.3s ease;
+  }
+  .step:hover::before { transform: translateY(-50%) scale(1.1); background: var(--accent-dark); }
+
+  /* Технологии */
+  .skills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .skills span {
+    background: var(--card);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(36, 48, 64, 0.7);
+    padding: 8px 16px;
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 15px;
+    transition: all 0.2s ease;
+  }
+  .skills span:hover { color: #fff; border-color: var(--accent); background: rgba(42, 171, 238, 0.05); }
+
+  /* Частые вопросы */
+  .faq-container { display: grid; gap: 12px; max-width: 750px; margin: 0 auto; }
+  .faq-item {
+    background: var(--card);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(36, 48, 64, 0.7);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .faq-input { display: none; }
+  .faq-label {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 24px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+  }
+  .faq-label:hover { color: var(--accent); }
+  .faq-label::after { content: '+'; font-size: 22px; color: var(--accent); transition: transform 0.3s ease; }
+  .faq-text {
+    max-height: 0;
+    padding: 0 24px;
+    color: var(--muted);
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    font-size: 15px;
+  }
+  .faq-input:checked ~ .faq-text { max-height: 200px; padding: 0 24px 20px; }
+  .faq-input:checked ~ .faq-label::after { transform: rotate(45deg); }
+
+  /* Соцсети и призыв */
+  .social-links { display: flex; justify-content: center; gap: 20px; margin-top: 25px; flex-wrap: wrap; }
+  .social-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: #fff;
+    text-decoration: none;
+    padding: 16px 36px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 17px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  }
+  .social-btn.tg { background: #24A1DE; }
+  .social-btn.tg:hover { background: #1d82b3; transform: translateY(-2px); box-shadow: 0 7px 20px rgba(36, 161, 222, 0.4); }
+  .social-btn.kw { background: #1fb36b; }
+  .social-btn.kw:hover { background: #179356; transform: translateY(-2px); box-shadow: 0 7px 20px rgba(31, 179, 107, 0.4); }
+
+  .cta { text-align: center; padding: 80px 0; }
+  .cta p { color: var(--muted); margin-bottom: 10px; }
+
+  footer { text-align: center; color: var(--muted); padding: 40px 0; font-size: 14px; border-top: 1px solid rgba(36, 48, 64, 0.7); }
+
+  /* Плавающая кнопка Телеграма */
+  .tg-float {
+    position: fixed; right: 20px; bottom: 20px;
+    background: #24A1DE; color: #fff;
+    text-decoration: none; font-weight: 600;
+    padding: 14px 22px; border-radius: 999px;
+    box-shadow: 0 8px 24px rgba(36, 161, 222, 0.45);
+    z-index: 10;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .tg-float:hover { transform: translateY(-3px); background: #1d82b3; }
+</style>
 </head>
 <body>
 
-  <!-- Фон из частиц -->
-  <div id="particles-js"></div>
+<!-- Анимированный фон -->
+<canvas id="bg-canvas"></canvas>
 
-  <div class="content-wrapper">
+<div class="content-wrapper">
 
-    <header id="top">
-      <div class="container">
-        <div class="badge">Fullstack-разработчик</div>
-        <h1>Telegram-боты, сайты и мини-апы <span>под ключ</span></h1>
-        <p class="lead">Делаю надёжные, быстрые и удобные инструменты, которые автоматизируют продажи, общение с клиентами и экономят ваше время.</p>
-        <a class="btn" href="https://kwork.ru" target="_blank" rel="noopener">Заказать на Кворке</a>
+  <header id="top">
+    <div class="container">
+      <div class="badge">Fullstack-разработчик</div>
+      <h1>Telegram-боты, сайты и мини-апы <span>под ключ</span></h1>
+      <p class="lead">Делаю надёжные, быстрые и удобные инструменты, которые автоматизируют продажи, общение с клиентами и экономят ваше время.</p>
+      <div class="btns">
+        <a class="btn" href="https://kwork.ru/user/minimal12405" target="_blank" rel="noopener">Заказать на Кворке</a>
+        <a class="btn ghost" href="https://t.me/c4rd_buyer" target="_blank" rel="noopener">Написать в Телеграм</a>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <section>
-      <div class="container">
-        <h2>Что я делаю</h2>
-        <div class="grid">
-          <div class="card">
-            <div class="icon">🤖</div>
-            <h3>Telegram-боты</h3>
-            <p>Боты для приёма заявок, продаж, рассылок, поддержки и автоматизации рутины.</p>
-          </div>
-          <div class="card">
-            <div class="icon">🌐</div>
-            <h3>Сайты к ботам</h3>
-            <p>Лендинги и веб-панели, которые работают вместе с ботом и приводят клиентов.</p>
-          </div>
-          <div class="card">
-            <div class="icon">📱</div>
-            <h3>Мини-апы</h3>
-            <p>Telegram Mini Apps: магазины, каталоги и сервисы прямо внутри мессенджера.</p>
-          </div>
+  <section>
+    <div class="container">
+      <h2>Что я делаю</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="icon">🤖</div>
+          <h3>Telegram-боты</h3>
+          <p>Боты для приёма заявок, продаж, рассылок, поддержки и автоматизации рутины.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🌐</div>
+          <h3>Сайты к ботам</h3>
+          <p>Лендинги и веб-панели, которые работают вместе с ботом и приводят клиентов.</p>
+        </div>
+        <div class="card">
+          <div class="icon">📱</div>
+          <h3>Мини-апы</h3>
+          <p>Telegram Mini Apps: магазины, каталоги и сервисы прямо внутри мессенджера.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section>
-      <div class="container">
-        <h2>Почему выбирают меня</h2>
-        <div class="grid">
-          <div class="card">
-            <div class="icon">⚡</div>
-            <h3>Высокая скорость</h3>
-            <p>Пишу оптимизированный код. Сайты открываются мгновенно, а боты реагируют на команды без задержек.</p>
-          </div>
-          <div class="card">
-            <div class="icon">🛠️</div>
-            <h3>Надежная архитектура</h3>
+  <section>
+    <div class="container">
+      <h2>Почему выбирают меня</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="icon">⚡</div>
+          <h3>Высокая скорость</h3>
+          <p>Пишу оптимизированный код. Сайты открываются мгновенно, а боты реагируют на команды без задержек.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🛠</div>
+          <h3>Надежная архитектура</h3>
+          <p>Продумываю структуру проекта заранее, чтобы бот не падал под нагрузкой и его легко было развивать дальше.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="prices">
+    <div class="container">
+      <h2>Цены</h2>
+      <p class="sub">Стартовая стоимость. Точную цену назову после обсуждения задачи.</p>
+      <div class="grid">
+
+        <div class="card price-card">
+          <h3>Простой бот</h3>
+          <div class="price">от 3 000 ₽</div>
+          <div class="term">срок 1–3 дня</div>
+          <ul>
+            <li>Меню и кнопки</li>
+            <li>Приём заявок и ответы на вопросы</li>
+            <li>Уведомления вам в Телеграм</li>
+          </ul>
+          <a class="btn ghost" href="https://t.me/c4rd_buyer" target="_blank" rel="noopener">Обсудить</a>
+        </div>
+
+        <div class="card price-card popular">
+          <span class="tag">Популярное</span>
+          <h3>Бот + сайт</h3>
+          <div class="price">от 7 000 ₽</div>
+          <div class="term">срок 3–7 дней</div>
+          <ul>
+            <li>Бот с базой данных</li>
+            <li>Сайт или лендинг к нему</li>
+            <li>Админ-панель</li>
+          </ul>
+          <a class="btn" href="https://t.me/c4rd_buyer" target="_blank" rel="noopener">Обсудить</a>
+        </div>
+
+        <div class="card price-card">
+          <h3>Мини-апп</h3>
+          <div class="price">от 11 000 ₽</div>
+          <div class="term">срок 5–10 дней</div>
+          <ul>
+            <li>Telegram Mini App</li>
+            <li>Каталог, корзина, оплата</li>
+            <li>Интеграция с ботом</li>
+          </ul>
+          <a class="btn ghost" href="https://t.me/c4rd_buyer" target="_blank" rel="noopener">Обсудить</a>
+        </div>
+
+      </div>
+      <p class="note">Цены ориентировочные и зависят от сложности. Работаю через безопасную сделку на Кворке.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Что я могу сделать</h2>
+      <div class="portfolio-grid">
+        <div class="portfolio-card">
+          <span class="portfolio-tag">Бот</span>
+          <h3>Бот для приёма заявок</h3>
+          <p>Клиент выбирает услугу кнопками, оставляет контакты, а заявка мгновенно приходит владельцу в Телеграм.</p>
+        </div>
+        <div class="portfolio-card">
+          <span class="portfolio-tag">Магазин</span>
+          <h3>Бот-магазин с оплатой</h3>
+          <p>Каталог товаров, корзина и приём платежей прямо в чате, плюс админ-панель для управления заказами.</p>
+        </div>
+        <div class="portfolio-card">
+          <span class="portfolio-tag">Мини-апп</span>
+          <h3>Мини-приложение с каталогом</h3>
+          <p>Удобная витрина внутри Телеграма: поиск, карточки товаров и оформление заказа в пару касаний.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Как я работаю</h2>
+      <div class="steps">
+        <div class="step"><strong>Обсуждаем задачу.</strong> Вы рассказываете, что нужно, я уточняю детали и называю срок.</div>
+        <div class="step"><strong>Делаю и показываю.</strong> Вы видите промежуточный результат и можете вносить правки.</div>
+        <div class="step"><strong>Запуск и передача.</strong> Разворачиваю проект, передаю доступы и отвечаю на вопросы.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Технологии</h2>
+      <div class="skills">
+        <span>Python</span>
+        <span>HTML/CSS</span>
+        <span>JavaScript</span>
+        <span>Telegram Bot API</span>
+        <span>Mini Apps</span>
+        <span>Веб-разработка</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Частые вопросы</h2>
+      <div class="faq-container">
+        <div class="faq-item">
+          <input type="checkbox" id="faq1" class="faq-input">
+          <label for="faq1" class="faq-label">Сколько времени занимает разработка?</label>
+          <div class="faq-text">Простой бот делаю за 1–3 дня, бот с сайтом за 3–7 дней, мини-апп за 5–10 дней. Точный срок называю после обсуждения задачи.</div>
+        </div>
+        <div class="faq-item">
+          <input type="checkbox" id="faq2" class="faq-input">
+          <label for="faq2" class="faq-label">Как проходит оплата?</label>
+          <div class="faq-text">Работаем через безопасную сделку на Кворке: деньги переходят ко мне только после того, как вы приняли результат.</div>
+        </div>
+        <div class="faq-item">
+          <input type="checkbox" id="faq3" class="faq-input">
+          <label for="faq3" class="faq-label">Можно ли вносить правки?</label>
+          <div class="faq-text">Да, вы видите промежуточный результат и можете вносить правки в процессе работы, пока всё не станет так, как нужно.</div>
+        </div>
+        <div class="faq-item">
+          <input type="checkbox" id="faq4" class="faq-input">
+          <label for="faq4" class="faq-label">Что я получу в конце?</label>
+          <div class="faq-text">Готовый работающий проект, доступы и исходный код, а также помощь с запуском и ответы на вопросы после сдачи.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container">
+      <h2>Давайте обсудим ваш проект</h2>
+      <p>Напишите мне в Телеграм или на Кворке, отвечу в течение дня.</p>
+      <div class="social-links">
+        <a class="social-btn tg" href="https://t.me/c4rd_buyer" target="_blank" rel="noopener">✈ Телеграм</a>
+        <a class="social-btn kw" href="https://kwork.ru/user/minimal12405" target="_blank" rel="noopener">Профиль на Кворке</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 2026 Марат. Telegram-боты, сайты и мини-апы.</footer>
+
+</div>
+
+<a class="tg-float" href="https://t.me/c4rd_buyer" target="_blank" rel="noopener">✈ Написать в Телеграм</a>
+
+<script>
+  /* Анимированный фон: плавающие частицы, соединённые линиями */
+  (function () {
+    var canvas = document.getElementById('bg-canvas');
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var mouse = { x: null, y: null };
+    var COLOR = '42, 171, 238';
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', function (e) { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener('mouseout', function () { mouse.x = null; mouse.y = null; });
+
+    function Particle() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * 0.6;
+      this.vy = (Math.random() - 0.5) * 0.6;
+      this.r = Math.random() * 1.8 + 0.6;
+    }
+    Particle.prototype.update = function () {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    };
+
+    function init() {
+      particles = [];
+      var count = Math.min(90, Math.floor((canvas.width * canvas.height) / 18000));
+      for (var i = 0; i < count; i++) particles.push(new Particle());
+    }
+    init();
+    window.addEventListener('resize', init);
+
+    function frame() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.update();
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + COLOR + ', 0.8)';
+        ctx.fill();
+
+        for (var j = i + 1; j < particles.length; j++) {
+          var q = particles[j];
+          var dx = p.x - q.x, dy = p.y - q.y;
+          var d = Math.sqrt(dx * dx + dy * dy);
+          if (d < 120) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = 'rgba(' + COLOR + ', ' + (0.18 * (1 - d / 120)) + ')';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+
+        if (mouse.x !== null) {
+          var mx = p.x - mouse.x, my = p.y - mouse.y;
+          var md = Math.sqrt(mx * mx + my * my);
+          if (md < 150) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.strokeStyle = 'rgba(' + COLOR + ', ' + (0.3 * (1 - md / 150)) + ')';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+    frame();
+  })();
+</script>
+
+</body>
+</html>
