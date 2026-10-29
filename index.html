@@ -8,7 +8,7 @@
   <style>
     :root {
       --bg: #0f1419;
-      --card: rgba(24, 32, 42, 0.75);
+      --card: rgba(24, 32, 42, 0.85);
       --text: #e8eef4;
       --muted: #8b9bab;
       --accent: #2aabee;
@@ -33,20 +33,20 @@
       top: 0;
       left: 0;
       z-index: 1;
-      pointer-events: none; /* Пропускает клики сквозь фон */
+      pointer-events: none;
     }
 
-    /* Поднимаем контент над анимированным фоном */
+    /* Оболочка контента */
     .content-wrapper {
       position: relative;
       z-index: 2;
     }
     
-    /* Анимация плавного появления блоков */
+    /* Анимация плавного появления */
     @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(20px);
       }
       to {
         opacity: 1;
@@ -59,7 +59,6 @@
     header { 
       padding: 100px 0 60px; 
       text-align: center;
-      opacity: 0;
       animation: fadeInUp 0.8s ease-out forwards;
     }
     
@@ -101,15 +100,11 @@
       box-shadow: 0 5px 20px rgba(42, 171, 238, 0.4);
     }
     
+    /* Убрали старую раздельную анимацию секций, теперь всё показывается сразу без багов */
     section { 
       padding: 60px 0;
-      opacity: 0;
       animation: fadeInUp 0.8s ease-out forwards;
     }
-    section:nth-of-type(1) { animation-delay: 0.2s; }
-    section:nth-of-type(2) { animation-delay: 0.4s; }
-    section:nth-of-type(3) { animation-delay: 0.6s; }
-    section:nth-of-type(4) { animation-delay: 0.8s; }
     
     h2 { font-size: 30px; margin-bottom: 35px; text-align: center; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
@@ -292,10 +287,9 @@
 </head>
 <body>
 
-  <!-- Блок с анимированными частицами -->
+  <!-- Фон из частиц -->
   <div id="particles-js"></div>
 
-  <!-- Оболочка для всего контента -->
   <div class="content-wrapper">
 
     <header id="top">
@@ -337,3 +331,8 @@
           <div class="card">
             <div class="icon">⚡</div>
             <h3>Высокая скорость</h3>
+            <p>Пишу оптимизированный код. Сайты открываются мгновенно, а боты реагируют на команды без задержек.</p>
+          </div>
+          <div class="card">
+            <div class="icon">🛠️</div>
+            <h3>Надежная архитектура</h3>
